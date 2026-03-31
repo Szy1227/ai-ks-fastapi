@@ -4,6 +4,10 @@ ARG USERNAME=ai-ks
 ARG USERUID
 ARG USERGID
 
+# 构建阶段安装 Python 依赖，避免容器启动时重复安装
+COPY code/requirements.txt /tmp/requirements.txt
+RUN python3 -m pip install --no-cache-dir -r /tmp/requirements.txt
+
 # 创建用户和组（UID/GID 由 tf_apply.sh 自动注入）
 RUN set -eux; \
     test -n "${USERNAME}" || (echo "ERROR: missing build arg USERNAME. 运行 ./tf_apply.sh 或传入 -var username=..." >&2; exit 1); \
